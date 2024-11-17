@@ -9,7 +9,7 @@ class DelayStream extends Transform {
     }
 
     _transform(chunk, encoding, callback) {
-        const chunkArray = chunk.toString().split('');
+        const chunkArray = chunk.toString().split('*');
         const pushChunk = (index) => {
             if (index < chunkArray.length) {
                 this.push(chunkArray[index]);
@@ -23,7 +23,7 @@ class DelayStream extends Transform {
 }
 
 app.get('/', (req, res, next) => {
-    const data = 'Hello World from a Stream!';
+    const data = 'Hello World from * a Stream!';
     console.log('Request received');
     const stream = new Readable({
         read() {
@@ -32,6 +32,8 @@ app.get('/', (req, res, next) => {
         }
     });
     const delayStream = new DelayStream(1000);
+    //add heade to response
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
     stream.pipe(delayStream).pipe(res);
 });
 

@@ -2,6 +2,9 @@ const express = require('express');
 const { Transform, Readable } = require('stream');
 const app = express();
 
+
+const chunkArray  = [{objet: "question", text:'What is your name?'},{objet: "question", text:'Type your name and press Enter'}];
+
 class DelayStream extends Transform {
     constructor(delay) {
         super();
@@ -9,10 +12,10 @@ class DelayStream extends Transform {
     }
 
     _transform(chunk, encoding, callback) {
-        const chunkArray = chunk.toString().split('*');
+        //const  chunkArray =  chunk.toString().split('*');
         const pushChunk = (index) => {
             if (index < chunkArray.length) {
-                this.push(chunkArray[index]);
+                this.push(JSON.stringify(chunkArray[index]));
                 setTimeout(() => pushChunk(index + 1), this.delay);
             } else {
                 callback();
